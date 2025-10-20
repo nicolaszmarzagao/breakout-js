@@ -11,7 +11,7 @@ window.addEventListener("keyup", e => keys[e.code] = false);
 
 // -- GLOBAL VARIABLES --
 let game_state = "menu";
-let current_scene = load_menu();
+let current_scene = null;
 
 // -- MAIN GAME LOOP --
 let last_time = 0;
@@ -43,47 +43,39 @@ function draw() {
 }
 
 // -- MENU FUNCTIONS --
-function load_menu() {
-    const menu = {
-        cursor: "start",
-        x: 200,
-        y: 300,
-        w: 300,
-        h: 200,
-    };
-
-    return menu;
-}
-
 function update_menu() {
-    if (keys["KeyW"]) {
-    }
-    if (keys["KeyS"]) {
-    }
-    if (keys["KeyEnter"]) {
+    if (keys["Enter"]) {
+        current_scene = load_game();
+        game_state = "game";
     }
 }
 
 function draw_menu() {
-    ctx.fillStyle = "#392b35";
+    let black = "#392b35";
+    let white = "#d1bfb0";
+    let blue  = "#486b7f"; 
+    let red   = "#bb474f";
+
+    let title = "Breakout-JS";
+    let start = "Press Enter";
+
+    ctx.fillStyle = black;
     ctx.fillRect(0,0,600,600);
-    
-    ctx.font = "bold 100px Courier New";
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText("Breakout!", 50, 150);
 
-    ctx.font = "60px arial";
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText("Start", 200, 300);
+    ctx.fillStyle = red;
+    ctx.fillRect(20,100,560,150);
 
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText("Exit", 200, 400);
+    ctx.font = "bold 80px Courier New";
+    let title_x = (600 - ctx.measureText(title).width) / 2;
+    ctx.fillStyle = black;
+    ctx.fillText(title, title_x, 200);
 
-    //ctx.fillStyle = "#ffffff";
-    //ctx.fillRect(current_scene.x, current_scene.y, current_scene.w, current_scene.h);
+
+    ctx.font = "50px Courier New";
+    ctx.fillStyle = white;
+    let start_x = (600 - ctx.measureText(start).width) / 2;
+    ctx.fillText(start, start_x, 400);
 }
-
-
 
 // -- GAME FUNCTIONS --
 function load_game() {
@@ -136,7 +128,7 @@ function load_game() {
 }
 
 
-function update_game(game, dt) {
+function update_game(dt) {
     const {player, ball, bricks} = current_scene;
 
     // controller
@@ -172,9 +164,14 @@ function update_game(game, dt) {
            bricks.splice(i,1); 
         }
     });
+
+    if (ball.y>600) {
+        game_state = "menu";
+        current_scene = null;
+    }
 }
 
-function draw_game(game) {
+function draw_game() {
     ctx.fillStyle = "#392b35";
     ctx.fillRect(0,0,600,600);
 
